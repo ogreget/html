@@ -50,6 +50,22 @@ button{cursor:pointer}
 <script>
     window.addEventListener('message', receiveMessage, false);
     function receiveMessage(event) {
+       // Daftar trusted domains
+        const allowedOrigins = [
+            'cdn.ampproject.org',
+'jalansmut.blogspot.com',
+'ogreget.github.io',
+'github.com',
+'ogreget.blogspot.com',
+'tujuhsusun.blogspot.com'
+            // Tambahkan domain lain sesuai kebutuhan
+        ];
+
+        // Cek asal pesan
+        if (!allowedOrigins.includes(event.origin)) {
+            console.warn('Pesan ditolak dari origin yang tidak dipercaya:', event.origin);
+            return; // Hanya izinkan pesan dari domain yang diizinkan
+        }
         if (event.data) {
             var msg;
             try {
@@ -65,7 +81,7 @@ button{cursor:pointer}
                 sentinel: 'amp',
                 type: 'embed-size',
                 height: msg.data.height
-                }, '*');
+                }, 'event.origin');
             }
         }
     }
