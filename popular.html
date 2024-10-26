@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html amp>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Popular Posts</title>
+    <link rel="stylesheet" href="https://cdn.ampproject.org/v0.css">
+    <style amp-custom>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 10px;
+        }
+        .post-title {
+            margin-bottom: 10px;
+            font-size: 16px;
+        }
+        .post-title a {
+            color: #0077cc;
+            text-decoration: none;
+        }
+        .post-title a:hover {
+            text-decoration: underline;
+        }
+    </style>
+    <script async src="https://cdn.ampproject.org/v0.amp-list-0.1.js"></script>
+</head>
+<body>
+    <h2>New Article</h2>
+    <amp-list width="auto" height="100" layout="fixed" 
+              src="{{blogUrl}}/feeds/posts/default?orderby=updated&alt=json">
+        <template type="amp-mustache">
+            <div class="post-title">
+                <a href="{{link.href}}" target="_blank">{{title.$t}}</a>
+            </div>
+        </template>
+    </amp-list>
+
+    <script>
+        // Mendapatkan URL blog dari parameter iframe
+        const blogUrl = new URL(window.location).searchParams.get('blog') || 'https://jalansmut.blogspot.com/';
+        window.blogUrl = blogUrl;
+    </script>
+</body>
+</html>
