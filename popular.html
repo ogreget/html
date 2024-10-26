@@ -1,11 +1,10 @@
 <!DOCTYPE html>
-<html amp lang="en">    
+<html>
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Popular Posts</title>
-    <link rel="stylesheet" href="https://cdn.ampproject.org/v0.css">
-    <style amp-custom>
+    <style>
         body {
             font-family: Arial, sans-serif;
             margin: 0;
@@ -23,23 +22,34 @@
             text-decoration: underline;
         }
     </style>
-    <script async src="https://cdn.ampproject.org/v0.amp-list-0.1.js"></script>
 </head>
 <body>
-    <h2>New Article</h2>
-    <amp-list width="auto" height="100" layout="fixed" 
-              src="{{blogUrl}}/feeds/posts/default?alt=json">
-        <template type="amp-mustache">
-            <div class="post-title">
-                <a href="{{link.href}}" target="_blank">{{title.$t}}</a>
-            </div>
-        </template>
-    </amp-list>
+    <h2>Popular Posts</h2>
+    <div id="posts"></div>
 
     <script>
-        // Mendapatkan URL blog dari parameter iframe
-        const blogUrl = new URL(window.location).searchParams.get('blog') || 'https://jalansmut.blogspot.com/';
-        window.blogUrl = blogUrl;
+        // Mendapatkan domain blog secara otomatis dari dokumen induk yang menggunakan iframe
+        const blogDomain = document.referrer || 'https://jalansmut.blogspot.com';
+        const feedUrl = `${blogDomain}/feeds/posts/default?orderby=updated&alt=json`;
+
+        // Mengambil data dari feed Blogger
+        fetch(feedUrl)
+            .then(response => response.json())
+            .then(data => {
+                const postsContainer = document.getElementById('posts');
+                const entries = data.feed.entry;
+                entries.slice(0, 5).forEach(entry => { // Menampilkan 5 postingan populer
+                    const postTitle = entry.title.$t;
+                    const postUrl = entry.link.find(link => link.rel === 'alternate').href;
+                    const postElement = document.createElement('div');
+                    postElement.className = 'post-title';
+                    postElement.innerHTML = `<a href="${postUrl}" target="_blank">${postTitle}</a>`;
+                    postsContainer.appendChild(postElement);
+                });
+            })
+            .catch(error => {
+                console.error('Error fetching feed:', error);
+            });
     </script>
 </body>
 </html>
