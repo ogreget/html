@@ -75,8 +75,10 @@ button{cursor:pointer}
     *  LEARN WHY DEFINING THESE VARIABLES IS IMPORTANT: https://disqus.com/admin/universalcode/#configuration-variables
     */
     var disqus_config = function () {
-        this.page.url = window.location;
-        this.page.identifier = window.location.hash;
+         var params = new URLSearchParams(window.location.search);
+    this.page.title = params.get("title");
+    this.page.url = params.get("url");
+    this.page.identifier = params.get("id");
     };
     (function() {  // DON'T EDIT BELOW THIS LINE
         var d = document, s = d.createElement('script');
