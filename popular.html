@@ -27,14 +27,14 @@
     <h2>New Article</h2>
     <div id="posts"></div>
 
-    <script>
+   <script>
     // Mendapatkan domain blog secara otomatis dari dokumen induk yang menggunakan iframe
     const blogDomain = document.referrer || 'https://jalansmut.blogspot.com';
     const feedUrl = `${blogDomain}/feeds/posts/default?orderby=updated&alt=json`;
 
-    // Menggunakan proxy CORS Anywhere
-    const proxyUrl = 'https://cors-anywhere.herokuapp.com/';
-    const urlWithProxy = proxyUrl + feedUrl;
+    // Menggunakan proxy ThingProxy
+    const proxyUrl = 'https://thingproxy.freeboard.io/fetch/';
+    const urlWithProxy = proxyUrl + encodeURIComponent(feedUrl);
 
     // Mengambil data dari feed Blogger menggunakan proxy
     fetch(urlWithProxy)
@@ -46,7 +46,7 @@
         })
         .then(data => {
             const postsContainer = document.getElementById('posts');
-            const entries = data.feed.entry;
+            const entries = data.contents.feed.entry; // Perhatikan bahwa data.contents digunakan di sini
             if (entries) {
                 entries.slice(0, 5).forEach(entry => { // Menampilkan 5 postingan populer
                     const postTitle = entry.title.$t;
