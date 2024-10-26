@@ -34,7 +34,9 @@
 
         // Mengambil data dari feed Blogger
         fetch(feedUrl)
-            .then(response => response.json())
+            .then(response => {
+        console.log('Request made, but cannot access response.');
+    })
             .then(data => {
                 const postsContainer = document.getElementById('posts');
                 const entries = data.feed.entry;
