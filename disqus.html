@@ -41,7 +41,7 @@ body {
                 window.parent.postMessage({
                 sentinel: 'amp',
                 type: 'embed-size',
-                height: msg.data.height
+                height: document.body.scrollHeight,
                 }, '*');
             }
         }
