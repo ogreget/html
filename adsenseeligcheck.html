@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AdSense Eligibility Checker</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        h1 { color: #0073e6; }
+        label { display: block; margin: 10px 0 5px; }
+        .result { margin-top: 20px; padding: 10px; border: 1px solid #ccc; }
+        .eligible { color: green; }
+        .not-eligible { color: red; }
+    </style>
+</head>
+<body>
+    <h1>AdSense Eligibility Checker</h1>
+    <form id="checkerForm">
+        <label>Apakah situs Anda memiliki konten asli dan berkualitas tinggi? (Ya/Tidak)</label>
+        <input type="text" id="qualityContent" placeholder="Ya atau Tidak">
+
+        <label>Apakah situs memiliki setidaknya 10 halaman konten? (Ya/Tidak)</label>
+        <input type="text" id="sufficientContent" placeholder="Ya atau Tidak">
+
+        <label>Apakah situs memiliki navigasi yang mudah? (Ya/Tidak)</label>
+        <input type="text" id="easyNavigation" placeholder="Ya atau Tidak">
+
+        <label>Apakah trafik situs berasal dari sumber organik yang sah? (Ya/Tidak)</label>
+        <input type="text" id="organicTraffic" placeholder="Ya atau Tidak">
+
+        <label>Apakah situs sudah berusia minimal 6 bulan? (Ya/Tidak)</label>
+        <input type="text" id="domainAge" placeholder="Ya atau Tidak">
+
+        <label>Apakah situs memiliki halaman kebijakan privasi, tentang kami, dan disclaimer? (Ya/Tidak)</label>
+        <input type="text" id="policyPages" placeholder="Ya atau Tidak">
+
+        <button type="button" onclick="checkEligibility()">Cek Kelayakan</button>
+    </form>
+
+    <div class="result" id="result"></div>
+
+    <script>
+        function checkEligibility() {
+            const qualityContent = document.getElementById("qualityContent").value.toLowerCase();
+            const sufficientContent = document.getElementById("sufficientContent").value.toLowerCase();
+            const easyNavigation = document.getElementById("easyNavigation").value.toLowerCase();
+            const organicTraffic = document.getElementById("organicTraffic").value.toLowerCase();
+            const domainAge = document.getElementById("domainAge").value.toLowerCase();
+            const policyPages = document.getElementById("policyPages").value.toLowerCase();
+
+            let eligible = true;
+            let reasons = [];
+
+            if (qualityContent !== "ya") {
+                eligible = false;
+                reasons.push("Konten tidak asli atau tidak berkualitas tinggi.");
+            }
+            if (sufficientContent !== "ya") {
+                eligible = false;
+                reasons.push("Situs memiliki kurang dari 10 halaman konten.");
+            }
+            if (easyNavigation !== "ya") {
+                eligible = false;
+                reasons.push("Situs tidak memiliki navigasi yang mudah.");
+            }
+            if (organicTraffic !== "ya") {
+                eligible = false;
+                reasons.push("Trafik tidak berasal dari sumber organik yang sah.");
+            }
+            if (domainAge !== "ya") {
+                eligible = false;
+                reasons.push("Situs belum berusia minimal 6 bulan.");
+            }
+            if (policyPages !== "ya") {
+                eligible = false;
+                reasons.push("Situs tidak memiliki halaman kebijakan privasi, tentang kami, atau disclaimer.");
+            }
+
+            const resultDiv = document.getElementById("result");
+            if (eligible) {
+                resultDiv.innerHTML = "<p class='eligible'>Selamat! Situs Anda memenuhi syarat untuk AdSense.</p>";
+            } else {
+                resultDiv.innerHTML = "<p class='not-eligible'>Maaf, situs Anda belum memenuhi syarat untuk AdSense karena:</p><ul>";
+                reasons.forEach(reason => {
+                    resultDiv.innerHTML += "<li>" + reason + "</li>";
+                });
+                resultDiv.innerHTML += "</ul>";
+            }
+        }
+    </script>
+</body>
+</html>
