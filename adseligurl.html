@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Automatic AdSense Eligibility Checker</title>
+    <title>AdSense Eligibility Checker</title>
     <style>
         body { font-family: Arial, sans-serif; margin: 20px; }
         h1 { color: #0073e6; }
@@ -13,7 +13,7 @@
     </style>
 </head>
 <body>
-    <h1>Automatic AdSense Eligibility Checker</h1>
+    <h1>AdSense Eligibility Checker</h1>
     <form id="checkerForm">
         <label>Masukkan URL situs Anda:</label>
         <input type="url" id="siteUrl" placeholder="https://www.contohsitus.com" required>
@@ -23,52 +23,75 @@
     <div class="result" id="result"></div>
 
     <script>
+        const apiKey = 'AIzaSyAm7h-4A337CSY8fehmHoRrSHMvNqTkPrE';  // API Key Anda
+        const cx = '056159da4383a4a13'; // Search Engine ID Anda
+
         async function checkEligibility() {
             const siteUrl = document.getElementById("siteUrl").value;
             const resultDiv = document.getElementById("result");
 
+            // Validasi URL
             if (!siteUrl) {
                 resultDiv.innerHTML = "<p class='not-eligible'>Harap masukkan URL yang valid.</p>";
                 return;
             }
 
             try {
-                // Ambil konten halaman
                 const response = await fetch(`https://api.allorigins.win/get?url=${encodeURIComponent(siteUrl)}`);
                 const data = await response.json();
                 const pageContent = data.contents;
 
-                // Parsing HTML dengan DOMParser
+                // Parsing konten HTML untuk mengambil elemen
                 const parser = new DOMParser();
                 const doc = parser.parseFromString(pageContent, 'text/html');
-                
-                // Ambil semua teks dalam paragraf dan heading
-                const textContent = Array.from(doc.querySelectorAll('p, h1, h2, h3, h4, h5, h6')).map(el => el.textContent).join(' ');
 
-                // Cek keaslian konten menggunakan API Pihak Ketiga
-                const plagiarismResponse = await checkPlagiarism(textContent);
-
-                // Inisialisasi variabel untuk kelayakan
+                // Inisialisasi variabel pengecekan
                 let eligible = true;
                 let reasons = [];
 
-                // Cek plagiarisme
-                if (plagiarismResponse.isPlagiarized) {
+                // 1. Cek keberadaan elemen <h1>
+                if (!doc.querySelector('h1')) {
                     eligible = false;
-                    reasons.push("Konten halaman terdeteksi sebagai plagiarisme.");
+                    reasons.push("Tidak ada heading utama (<h1>) pada halaman.");
                 }
 
-                // Cek elemen penting lainnya
-                const h1Element = doc.querySelector('h1');
-                if (!h1Element || h1Element.textContent.trim() === "") {
-                    eligible = false;
-                    reasons.push("Tidak ada heading utama (<h1>) dengan teks pada halaman.");
-                }
-
-                const paragraphCount = doc.querySelectorAll('p').length;
-                if (paragraphCount < 10) {
+                // 2. Cek jumlah paragraf
+                const paragraphs = Array.from(doc.querySelectorAll('p'));
+                if (paragraphs.length < 10) {
                     eligible = false;
                     reasons.push("Halaman memiliki kurang dari 10 paragraf konten.");
+                }
+
+                // 3. Cek panjang konten
+                const pageText = doc.body.innerText || "";
+                if (pageText.length < 3000) {
+                    eligible = false;
+                    reasons.push("Jumlah konten halaman kurang dari 3000 karakter.");
+                }
+
+                // 4. Cek halaman 'About' dan 'Privacy Policy'
+                if (!pageContent.includes("about") || !pageContent.includes("privacy")) {
+                    eligible = false;
+                    reasons.push("Halaman tidak memiliki 'About Us' atau 'Privacy Policy'.");
+                }
+
+                // 5. Cek navigasi sederhana (jumlah link)
+                const links = doc.querySelectorAll('a');
+                if (links.length < 5) {
+                    eligible = false;
+                    reasons.push("Navigasi halaman memiliki kurang dari 5 link.");
+                }
+
+                // 6. Cek keaslian konten menggunakan Google Custom Search API
+                for (let i = 0; i < Math.min(paragraphs.length, 5); i++) {
+                    const paragraph = paragraphs[i].textContent;
+                    const duplicateFound = await checkDuplicateGoogle(paragraph);
+
+                    if (duplicateFound) {
+                        eligible = false;
+                        reasons.push(`Konten duplikasi terdeteksi: "${paragraph.slice(0, 100)}..."`);
+                        break;
+                    }
                 }
 
                 // Tampilkan hasil
@@ -88,22 +111,16 @@
             }
         }
 
-        // Fungsi untuk cek plagiarisme menggunakan API (misalnya, PlagiarismDetector.net)
-        async function checkPlagiarism(text) {
-            const apiKey = 'YOUR_API_KEY';  // Ganti dengan API key Anda
-            const response = await fetch('https://api.plagiarismdetector.net/v1/check', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${apiKey}`,
-                },
-                body: JSON.stringify({
-                    text: text
-                })
-            });
-
+        // Fungsi untuk memeriksa duplikasi konten di Google Search
+        async function checkDuplicateGoogle(text) {
+            const query = encodeURIComponent(`"${text}"`);
+            const url = `https://www.googleapis.com/customsearch/v1?q=${query}&key=${apiKey}&cx=${cx}`;
+            
+            const response = await fetch(url);
             const data = await response.json();
-            return data; // Misal data memiliki atribut isPlagiarized
+            
+            // Periksa apakah ada hasil pencarian
+            return data.items && data.items.length > 0;
         }
     </script>
 </body>
