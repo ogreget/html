@@ -1,0 +1,21 @@
+{
+  "name": "Jalan Semut",
+  "short_name": "JalanSemut",
+  "start_url": "https://jalansmut.blogspot.com/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#ffffff",
+  "description": "Jalan Semut menyajikan berbagai informasi menarik, artikel bermanfaat, dan tips inspiratif untuk pembaca. Temukan konten tentang teknologi, gaya hidup, dan perjalanan yang menarik di sini.",
+  "icons": [
+    {
+      "src": "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEgfRyHzkUo_8Jek9MZmlyhHcdy8wSo-qjWlGd51M-00fWw8b6ydJ4JZoHS3NTKcVD_-YEEOVF_19rUX-Mm-J8BmmGs0u90Slbwpon3i_p1I2sKS73axnGVLbObZvUUOkjaozRqp1ne9jb6phO1WISWaYMYN7U1h8u9m6gJpT-Y4HJVUnOnoRMF3uR_z4lk/s180/jalan-semut-favicon.png",
+      "sizes": "180x180",
+      "type": "image/png"
+    },
+    {
+      "src": "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEgfRyHzkUo_8Jek9MZmlyhHcdy8wSo-qjWlGd51M-00fWw8b6ydJ4JZoHS3NTKcVD_-YEEOVF_19rUX-Mm-J8BmmGs0u90Slbwpon3i_p1I2sKS73axnGVLbObZvUUOkjaozRqp1ne9jb6phO1WISWaYMYN7U1h8u9m6gJpT-Y4HJVUnOnoRMF3uR_z4lk/s512/jalan-semut-favicon.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
