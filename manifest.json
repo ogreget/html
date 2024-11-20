@@ -1,7 +1,7 @@
 {
   "name": "Jalan Semut",
   "short_name": "JalanSemut",
-  "start_url": "/",
+  "start_url": "https://jalansmut.blogspot.com/",
   "display": "standalone",
   "background_color": "#ffffff",
   "theme_color": "#ffffff",
