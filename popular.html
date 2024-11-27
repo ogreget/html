@@ -6,12 +6,15 @@
     <title>New Article</title>
     <style>
         body {
-            font-family:-apple-system,BlinkMacSystemFont,"Roboto","Segoe UI","Oxygen-Sans","Ubuntu","Cantarell","Helvetica Neue",sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, "Roboto", "Segoe UI", "Oxygen-Sans", "Ubuntu", "Cantarell", "Helvetica Neue", sans-serif;
             margin: 0;
             padding: 0;
         }
         .post-title {
-            font-size:14px;font-weight:400;line-height:1;margin:0;
+            font-size: 14px;
+            font-weight: 400;
+            line-height: 1;
+            margin: 0;
         }
         .post-title a {
             color: #140099;
@@ -19,50 +22,44 @@
         }
         .post-title a:hover {
             text-decoration: none;
-            color: #fff
+            color: #fff;
         }
     </style>
 </head>
 <body>
     <div id="posts"></div>
 
-   <script>
-    // Mendapatkan domain blog secara otomatis dari dokumen induk yang menggunakan iframe
-    const blogDomain = document.referrer || 'https://jalansmut.blogspot.com';
-    const feedUrl = `${blogDomain}/feeds/posts/default?orderby=updated&alt=json`;
+    <script>
+        // URL ke script PHP yang mengambil feed
+        const phpFeedUrl = 'https://ogreget.github.io/html/get-feed.php';
 
-    // Menggunakan proxy ThingProxy
-    const proxyUrl = 'https://thingproxy.freeboard.io/fetch/';
-    const urlWithProxy = proxyUrl + encodeURIComponent(feedUrl);
-
-    // Mengambil data dari feed Blogger menggunakan proxy
-    fetch(urlWithProxy)
-        .then(response => {
-            if (!response.ok) {
-                throw new Error('Network response was not ok');
-            }
-            return response.json();
-        })
-        .then(data => {
-            const postsContainer = document.getElementById('posts');
-            const entries = data.contents.feed.entry; // Perhatikan bahwa data.contents digunakan di sini
-            if (entries) {
-                entries.slice(0, 5).forEach(entry => { // Menampilkan 5 postingan populer
-                    const postTitle = entry.title.$t;
-                    const postUrl = entry.link.find(link => link.rel === 'alternate').href;
-                    const postElement = document.createElement('div');
-                    postElement.className = 'post-title';
-                    postElement.innerHTML = `<a href="${postUrl}" target="_blank">${postTitle}</a>`;
-                    postsContainer.appendChild(postElement);
-                });
-            } else {
-                console.log('No entries found in feed.');
-            }
-        })
-        .catch(error => {
-            console.error('Error fetching feed:', error);
-        });
-</script>
-
+        // Mengambil data feed melalui PHP
+        fetch(phpFeedUrl)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(data => {
+                const postsContainer = document.getElementById('posts');
+                const entries = data.feed.entry;
+                if (entries) {
+                    entries.slice(0, 5).forEach(entry => {
+                        const postTitle = entry.title.$t;
+                        const postUrl = entry.link.find(link => link.rel === 'alternate').href;
+                        const postElement = document.createElement('div');
+                        postElement.className = 'post-title';
+                        postElement.innerHTML = `<a href="${postUrl}" target="_blank">${postTitle}</a>`;
+                        postsContainer.appendChild(postElement);
+                    });
+                } else {
+                    console.log('No entries found in feed.');
+                }
+            })
+            .catch(error => {
+                console.error('Error fetching feed:', error);
+            });
+    </script>
 </body>
 </html>
